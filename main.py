@@ -1,40 +1,84 @@
-#fastAPI启动文件
-#文档地址：http://127.0.0.1:8081/docs
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, Header, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
-import uvicorn
+from pydantic import BaseModel
+from typing import Optional
+from dotenv import load_dotenv
+from app.services.agent import get_agent_response
+from app.utils.context import set_request_token
+from app.websocket import websocket_chat_handler
 
-# 配置全局参数
-app = FastAPI(
-    title="FastAPI 标准项目",
-    description="包含跨域、异常处理的标准启动文件",
-    version="1.0.0",
-    docs_url="/docs",  # 自定义 Swagger 文档路径
-    redoc_url="/redoc"  # 自定义 ReDoc 文档路径
-)
+load_dotenv()
+app = FastAPI()
 
-# 跨域
+# 配置 CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], 
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],  
-    allow_headers=["*"],  
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-@app.get("/")
-async def root():
-    
-    return {"message": "FastAPI 标准启动文件", "docs": "http://127.0.0.1:8081/docs"}
+
+class ChatRequest(BaseModel):
+    user_id: str
+    query: str
 
 
+@app.post("/chat")
+async def chat_endpoint(req: ChatRequest, authorization: Optional[str] = Header(None)):
+    print("进来了")
 
-# 4. 启动入口
+    """
+    HTTP 聊天端点（非流式）
+
+    Args:
+        req: 请求体，包含 user_id 和 query
+        authorization: 请求头中的 Authorization token
+    """
+    # 提取 token（去掉 "Bearer " 前缀）
+    token = None
+    if authorization:
+        # 支持 "Bearer xxx" 和直接传 "xxx" 两种格式
+        if authorization.startswith("Bearer "):
+            token = authorization[7:]  # 去掉 "Bearer " 前缀
+        else:
+            token = authorization
+    else:
+        print("authoation为空")
+
+    # 将 token 设置到上下文中
+    if token:
+        set_request_token(token)
+    else:
+        print("token是空")
+
+    # 调用业务逻辑
+    answer = await get_agent_response(req.user_id, req.query)
+    print(answer)
+    return {"response": answer}
+
+
+@app.websocket("/ws/chat/{user_id}")
+async def websocket_chat_endpoint(websocket: WebSocket, user_id: str):
+    """
+    WebSocket 聊天端点（流式，打字机效果）
+
+    Args:
+        websocket: WebSocket 连接对象
+        user_id: 用户 ID（从路径参数获取）
+
+    消息格式:
+        发送: {"query": "你的问题", "token": "your-token"}
+        接收:
+            - {"type": "chunk", "content": "文本片段", "is_final": false}
+            - {"type": "status", "status": "thinking", "data": {...}}
+            - {"type": "error", "content": "错误信息"}
+    """
+    await websocket_chat_handler(websocket, user_id)
+
+
 if __name__ == "__main__":
-    uvicorn.run(
-        app="main:app",
-        host="localhost", 
-        port=8081,
-        reload=True,  
-        workers=1  
-    )
+    import uvicorn
+
+    uvicorn.run(app, host="0.0.0.0", port=8001)
