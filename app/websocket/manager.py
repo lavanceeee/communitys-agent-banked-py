@@ -25,7 +25,7 @@ class ConnectionManager:
         await websocket.accept()
         self.active_connections[user_id] = websocket
         print(
-            f"[WebSocket] User {user_id} connected. Total connections: {len(self.active_connections)}"
+            f"已建立一个websocket连接 | [WebSocket] User {user_id} connected. Total connections: {len(self.active_connections)}"
         )
 
     def disconnect(self, user_id: str):
@@ -38,7 +38,7 @@ class ConnectionManager:
         if user_id in self.active_connections:
             del self.active_connections[user_id]
             print(
-                f"[WebSocket] User {user_id} disconnected. Total connections: {len(self.active_connections)}"
+                f"关闭一个连接 | [WebSocket] User {user_id} disconnected. Total connections: {len(self.active_connections)}"
             )
 
     async def send_message(self, user_id: str, message: dict):

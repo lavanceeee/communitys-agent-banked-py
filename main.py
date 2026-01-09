@@ -74,6 +74,10 @@ async def websocket_chat_endpoint(websocket: WebSocket, user_id: str):
             - {"type": "chunk", "content": "文本片段", "is_final": false}
             - {"type": "status", "status": "thinking", "data": {...}}
             - {"type": "error", "content": "错误信息"}
+
+    注意:
+        WebSocket 是长连接，数据通过 websocket.send() 实时推送，
+        不是通过 return 返回！前端通过 ws.onmessage 接收数据。
     """
     await websocket_chat_handler(websocket, user_id)
 

@@ -38,8 +38,6 @@ async def websocket_chat_handler(websocket: WebSocket, user_id: str):
             if query:
                 # 流式处理并发送响应
                 await get_agent_response_stream(user_id, query)
-            else:
-                await manager.send_error(user_id, "查询内容不能为空")
 
     except WebSocketDisconnect:
         print(f"[WebSocket] User {user_id} disconnected")
