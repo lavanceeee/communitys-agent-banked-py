@@ -16,5 +16,4 @@ def set_request_token(token: str):
 
 def get_request_token() -> Optional[str]:
     """获取当前请求的 token"""
-    print(f"-----当前的token是{request_token.get()}-----")
     return request_token.get()
