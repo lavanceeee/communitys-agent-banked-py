@@ -56,6 +56,8 @@ class ConnectionManager:
             except Exception as e:
                 print(f"[WebSocket] Error sending message to {user_id}: {e}")
                 self.disconnect(user_id)
+                # 抛出异常，让上层知道连接已断开
+                raise RuntimeError(f"WebSocket send failed for user {user_id}: {e}")
 
     async def send_text_chunk(self, user_id: str, chunk: str, is_final: bool = False):
         """

@@ -16,11 +16,19 @@ export const getMyBillsApi = (params: any) => {
 
 
 @tool
-async def query_unpaid_bills(status: int) -> str:
+async def query_unpaid_bills(status: int = 0) -> str:
     """
     查询用户当前所有的代缴账单记录。
     参数: status: 0 (代缴)
     """
-
-    data = await http_client.get("/api/property-fee/bills", params={"status": 0})
-    return json.dumps(data, ensure_ascii=False)
+    try:
+        data = await http_client.get("/api/property-fee/bills", params={"status": status})
+        return json.dumps(data, ensure_ascii=False)
+    except Exception as e:
+        error_msg = {
+            "success": False,
+            "error": "服务暂时不可用",
+            "message": "抱歉，账单服务当前无法访问，请稍后再试。",
+            "detail": str(e)
+        }
+        return json.dumps(error_msg, ensure_ascii=False)

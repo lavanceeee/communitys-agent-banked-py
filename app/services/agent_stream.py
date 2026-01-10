@@ -8,6 +8,7 @@ import asyncio
 from langchain_openai import ChatOpenAI
 from langgraph.prebuilt import create_react_agent
 from app.tools import all_tools
+from app.tools.tool_metadata import get_tool_display_info
 from app.websocket.manager import manager
 from dotenv import load_dotenv
 from app.database.service.message import save_message
@@ -41,6 +42,11 @@ async def get_agent_response_stream(user_id: str, session_id: int, user_input: s
 
         # 使用 langgraph 的 create_react_agent
         agent_executor = create_react_agent(llm, all_tools)
+
+        # 配置：增加递归限制，防止无限循环
+        config = {
+            "recursion_limit": 50,  # 增加递归限制
+        }
 
         # 流式运行
         full_response = ""
