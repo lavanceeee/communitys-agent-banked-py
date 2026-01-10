@@ -13,9 +13,18 @@ async def get_user_notifications(pageNum: int = 0, pageSize: int = 10) -> str:
     参数: pageNum: 页码
     参数: pageSize: 每页条数
     """
-
-    data = await http_client.get("/api/notification/list", params={"pageNum": pageNum, "pageSize": pageSize})
-    return json.dumps(data, ensure_ascii=False)
+    try:
+        data = await http_client.get("/api/notification/list", params={"pageNum": pageNum, "pageSize": pageSize})
+        return json.dumps(data, ensure_ascii=False)
+    except Exception as e:
+        # 返回更明确的错误信息，告诉 Agent 不要重试
+        error_msg = {
+            "success": False,
+            "error": "服务暂时不可用",
+            "message": "抱歉，通知服务当前无法访问，请稍后再试。",
+            "detail": str(e)
+        }
+        return json.dumps(error_msg, ensure_ascii=False)
 
 
 @tool
