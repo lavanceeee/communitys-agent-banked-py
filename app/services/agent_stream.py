@@ -10,18 +10,20 @@ from langgraph.prebuilt import create_react_agent
 from app.tools import all_tools
 from app.websocket.manager import manager
 from dotenv import load_dotenv
+from app.database.service.message import save_message
 
 load_dotenv()
 
 API_KEY = os.getenv("API_KEY")
 
 
-async def get_agent_response_stream(user_id: str, user_input: str):
+async def get_agent_response_stream(user_id: str, session_id: int, user_input: str):
     """
     流式获取 Agent 响应，通过 WebSocket 发送
 
     Args:
         user_id: 用户 ID
+        session_id: 会话 ID
         user_input: 用户输入
     """
     try:
@@ -81,8 +83,26 @@ async def get_agent_response_stream(user_id: str, user_input: str):
         await manager.send_text_chunk(user_id, "", is_final=True)
         await manager.send_status(user_id, "completed", {"message": "回答完成"})
 
+        # 异步保存消息到
+        print("---开始保存消息----")
+
+        async def _save_to_db(sid, role, content):
+            try:
+                # 假设 save_message 是同步的，这里直接调用
+                # 如果是耗时操作，建议用 loop.run_in_executor
+                save_message(session_id=sid, role=role, content=content)
+            except Exception as e:
+                print(f"保存消息失败: {e}")
+
+        if session_id:
+            asyncio.create_task(_save_to_db(session_id, "user", user_input))
+            asyncio.create_task(_save_to_db(session_id, "assistant", full_response))
     except Exception as e:
+        import traceback
+
+        error_details = traceback.format_exc()
         print(f"[Agent Stream Error] {e}")
+        print(f"[Agent Stream Error Details]\n{error_details}")
         await manager.send_error(user_id, f"处理出错: {str(e)}")
 
 
