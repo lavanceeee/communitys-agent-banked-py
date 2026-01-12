@@ -3,6 +3,9 @@ from app.utils.JWTutils.authentication import verify_token
 from app.database import crud
 from app.database.service.session import create_session
 from app.services.title_generator import generate_title
+from app.database.service.session import delete_session_service
+from app.database.service.session import check_session_owner
+from app.database.service.message import delete_messages
 from pydantic import BaseModel
 
 router = APIRouter(tags=["会话"])
@@ -78,5 +81,24 @@ async def create_new_session(
             },
         }
 
+    except Exception as e:
+        return {"code": 500, "message": f"服务器内部错误: {str(e)}", "data": None}
+
+
+# 删除会话
+@router.delete("/delete-session")
+async def delete_session(session_id: int, user_id: int = Depends(verify_token)):
+    try:
+        if not check_session_owner(session_id, user_id):
+            return {"code": 403, "message": "无权访问此会话", "data": None}
+
+        deleted_session = delete_session_service(session_id)
+
+        deleted_messages = delete_messages(session_id)
+
+        if deleted_session and deleted_messages:
+            return {"code": 200, "message": "会话删除成功", "data": None}
+
+        return {"code": 500, "message": "会话删除失败", "data": None}
     except Exception as e:
         return {"code": 500, "message": f"服务器内部错误: {str(e)}", "data": None}

@@ -5,6 +5,8 @@ from app.api.session import router as session_router
 from app.api.dialog import router as dialog_router
 from app.api.tools import router as tools_router
 
+from app.api.message import router as message_router
+
 load_dotenv()
 app = FastAPI(title="Community Agent API")
 
@@ -21,6 +23,7 @@ app.add_middleware(
 app.include_router(session_router)
 app.include_router(dialog_router)
 app.include_router(tools_router)
+app.include_router(message_router)
 
 
 if __name__ == "__main__":
