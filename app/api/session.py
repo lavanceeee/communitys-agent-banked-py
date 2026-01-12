@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, Query
 from app.utils.JWTutils.authentication import verify_token
-from app.database import crud
 from app.database.service.session import create_session
 from app.services.title_generator import generate_title
 from app.database.service.session import delete_session_service
 from app.database.service.session import check_session_owner
 from app.database.service.message import delete_messages
 from pydantic import BaseModel
+from app.database.service.session import get_sessions_paginated
 
 router = APIRouter(tags=["会话"])
 
@@ -22,7 +22,7 @@ async def get_session_history(
     print(f"用户 ID: {user_id}")
 
     try:
-        result = crud.get_sessions_paginated(user_id, page, page_size)
+        result = get_sessions_paginated(user_id, page, page_size)
 
         print(f"---获取历史记录成功，{result}----")
 
