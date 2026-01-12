@@ -70,19 +70,33 @@ async def get_agent_response_stream(user_id: str, session_id: int, user_input: s
             elif kind == "on_tool_start":
                 # 工具调用开始
                 tool_name = event["name"]
+                tool_info = get_tool_display_info(tool_name)  # 获取工具元数据
                 await manager.send_status(
                     user_id,
                     "tool_calling",
-                    {"tool": tool_name, "message": f"正在调用工具: {tool_name}"},
+                    {
+                        "tool": tool_name,
+                        "display_name": tool_info["display_name"],
+                        "message": tool_info["description"],
+                        "icon": tool_info["icon"],
+                        "category": tool_info["category"],
+                    },
                 )
 
             elif kind == "on_tool_end":
                 # 工具调用结束
                 tool_name = event["name"]
+                tool_info = get_tool_display_info(tool_name)
                 await manager.send_status(
                     user_id,
                     "tool_completed",
-                    {"tool": tool_name, "message": f"工具 {tool_name} 执行完成"},
+                    {
+                        "tool": tool_name,
+                        "display_name": tool_info["display_name"],
+                        "message": f"{tool_info['display_name']}执行完成",
+                        "icon": tool_info["icon"],
+                        "category": tool_info["category"],
+                    },
                 )
 
         # 发送完成状态
