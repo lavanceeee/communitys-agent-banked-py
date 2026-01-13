@@ -13,7 +13,13 @@ def save_message(session_id: int, role: str, content: str):
 
 # 获取历史聊天记录
 def get_messages(session_id: int):
-    return supabase.table("messages").select("*").eq("session_id", session_id).execute()
+    return (
+        supabase.table("messages")
+        .select("*")
+        .eq("session_id", session_id)
+        .order("created_at", desc=False)
+        .execute()
+    )
 
 
 # 删除session_id的所有消息
