@@ -3,12 +3,14 @@
 支持 WebSocket 流式输出
 """
 
+from langchain_core.messages.ai import AIMessage
+from langchain_core.messages.human import HumanMessage
+from app.database.service.message import get_messages
 import os
 import asyncio
 from langchain_openai import ChatOpenAI
 from langgraph.prebuilt import create_react_agent
 from app.tools import all_tools
-from app.tools.tool_metadata import get_tool_display_info
 from app.websocket.manager import manager
 from dotenv import load_dotenv
 from app.database.service.message import save_message
@@ -31,6 +33,28 @@ async def get_agent_response_stream(user_id: str, session_id: int, user_input: s
         # 发送开始状态
         await manager.send_status(user_id, "thinking", {"message": "正在思考..."})
 
+        history_message = []
+
+        if session_id:
+            db_res = get_messages(session_id)
+
+            if db_res.data:
+                for msg in db_res.data:
+                    role = msg.get("role")
+                    content = msg.get("content")
+
+                    if role == "user":
+                        history_message.append(HumanMessage(content=content))
+
+                    else:
+                        history_message.append(AIMessage(content=content))
+
+        current_message = HumanMessage(
+            content=f"User ID: {user_id}\nRequest: {user_input}"
+        )
+
+        input_message = history_message + [current_message]
+
         # 初始化模型（启用流式输出）
         llm = ChatOpenAI(
             api_key=API_KEY,
@@ -51,8 +75,9 @@ async def get_agent_response_stream(user_id: str, session_id: int, user_input: s
         # 流式运行
         full_response = ""
         async for event in agent_executor.astream_events(
-            {"messages": [("user", f"User ID: {user_id}\nRequest: {user_input}")]},
+            {"messages": input_message},
             version="v1",
+            config=config,
         ):
             kind = event["event"]
 
@@ -64,7 +89,7 @@ async def get_agent_response_stream(user_id: str, session_id: int, user_input: s
                     full_response += content
                     # 发送文本片段
                     await manager.send_text_chunk(user_id, content, is_final=False)
-                    # 添加小延迟，模拟打字机效果
+                    # 延迟
                     await asyncio.sleep(0.01)
 
             elif kind == "on_tool_start":
@@ -89,13 +114,12 @@ async def get_agent_response_stream(user_id: str, session_id: int, user_input: s
         await manager.send_text_chunk(user_id, "", is_final=True)
         await manager.send_status(user_id, "completed", {"message": "回答完成"})
 
-        # 异步保存消息到
+        # 异步保存消息
         print("---开始保存消息----")
 
         async def _save_to_db(sid, role, content):
             try:
-                # 假设 save_message 是同步的，这里直接调用
-                # 如果是耗时操作，建议用 loop.run_in_executor
+                # 如果是耗时操作，用 loop.run_in_executor
                 save_message(session_id=sid, role=role, content=content)
             except Exception as e:
                 print(f"保存消息失败: {e}")

@@ -39,8 +39,10 @@ async def websocket_chat_handler(
             message = json.loads(data)
 
             query = message.get("query", "")
-            # 优先使用消息里的 sessionId，其次使用 URL 参数的
-            current_session_id = message.get("sessionId") or session_id
+            # 使用消息里的 session_id (支持 camelCase 或 snake_case)
+            current_session_id = (
+                message.get("session_id") or message.get("sessionId") or session_id
+            )
 
             if query:
                 # 1. 自动创建会话逻辑 (如果没传 sessionId)
