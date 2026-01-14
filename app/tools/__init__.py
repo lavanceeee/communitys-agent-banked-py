@@ -3,6 +3,12 @@ from app.tools.community.bills_tools import query_unpaid_bills
 from app.tools.community.notification_tools import get_user_notifications
 from app.tools.community.privatemessage_tools import send_private_messages
 from app.tools.community.notification_tools import read_notification
+from app.tools.others.search import (
+    web_search,
+    wikipedia_search,
+    toutiao_hot_news,
+    search_domains_info,
+)
 
 # 未来如果有其他工具文件，继续在这里导入
 # from app.tools.wallet_tools import query_wallet_balance, transfer_money
@@ -14,5 +20,9 @@ all_tools = [
     get_user_notifications,
     send_private_messages,
     read_notification,
+    web_search,
+    wikipedia_search,
+    toutiao_hot_news,
+    search_domains_info,
     # 以后新增工具直接在这里添加
 ]
