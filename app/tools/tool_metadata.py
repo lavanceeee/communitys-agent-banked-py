@@ -68,6 +68,12 @@ TOOL_METADATA = {
         "icon": "repair",
         "category": "repair"
     },
+    "get_weather": {
+        "display_name": "查询天气",
+        "description": "正在查询天气",
+        "icon": "weather",
+        "category": "weather"
+    },
 }
 
 
