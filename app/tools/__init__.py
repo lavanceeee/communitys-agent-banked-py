@@ -10,6 +10,7 @@ from app.tools.others.search import (
     toutiao_hot_news,
     search_domains_info,
 )
+from app.tools.mall.goods import search_goods
 
 # 未来如果有其他工具文件，继续在这里导入
 # from app.tools.wallet_tools import query_wallet_balance, transfer_money
@@ -26,5 +27,6 @@ all_tools = [
     wikipedia_search,
     toutiao_hot_news,
     search_domains_info,
+    search_goods,
     # 以后新增工具直接在这里添加
 ]
