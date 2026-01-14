@@ -3,6 +3,7 @@ from app.tools.community.bills_tools import query_unpaid_bills
 from app.tools.community.notification_tools import get_user_notifications
 from app.tools.community.privatemessage_tools import send_private_messages
 from app.tools.community.notification_tools import read_notification
+from app.tools.api.weather_tools import get_weather
 from app.tools.others.search import (
     web_search,
     wikipedia_search,
@@ -20,6 +21,7 @@ all_tools = [
     get_user_notifications,
     send_private_messages,
     read_notification,
+    get_weather,
     web_search,
     wikipedia_search,
     toutiao_hot_news,
