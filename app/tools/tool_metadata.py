@@ -74,6 +74,56 @@ TOOL_METADATA = {
         "icon": "weather",
         "category": "weather"
     },
+    "send_scheduled_email": {
+        "display_name": "发送定时邮件",
+        "description": "正在发送定时邮件",
+        "icon": "email",
+        "category": "email"
+    },
+    "get_time": {
+        "display_name": "获取当前时间",
+        "description": "正在获取当前时间",
+        "icon": "time",
+        "category": "time"
+    },
+    
+    # 搜索相关
+    "web_search": {
+        "display_name": "网络搜索",
+        "description": "正在使用 Google 搜索联网查询",
+        "icon": "search",
+        "category": "search"
+    },
+    "wikipedia_search": {
+        "display_name": "维基百科搜索",
+        "description": "正在查询维基百科",
+        "icon": "wikipedia",
+        "category": "search"
+    },
+    "toutiao_hot_news": {
+        "display_name": "头条热榜",
+        "description": "正在获取今日头条热榜新闻",
+        "icon": "news",
+        "category": "search"
+    },
+    "search_domains_info": {
+        "display_name": "域名搜索",
+        "description": "正在搜索域名信息",
+        "icon": "domain",
+        "category": "search"
+    },
+    "get_scheduled_email": {
+        "display_name": "查询定时邮件",
+        "description": "正在查询定时邮件",
+        "icon": "email",
+        "category": "email"
+    },
+    "delete_scheduled_email": {
+        "display_name": "删除定时邮件",
+        "description": "正在删除定时邮件",
+        "icon": "email",
+        "category": "email"
+    },
 }
 
 

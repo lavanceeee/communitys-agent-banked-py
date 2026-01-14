@@ -16,7 +16,6 @@ async def search_goods(
     可以根据关键词、分类ID进行筛选，支持分页。
     """
     try:
-        print("---进来了----")
         params = {
             "categoryId": category_id,
             "keyword": keyword,
@@ -25,10 +24,8 @@ async def search_goods(
         }
 
         response = await http_client.post("/api/mall/list", json_data=params)
-        print(f"{response}---")
         return json.dumps(response, ensure_ascii=False)
     except Exception as e:
-        print(e)
         error_msg = {
             "success": False,
             "error": "服务暂时不可用",
