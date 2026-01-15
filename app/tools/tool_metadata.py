@@ -20,15 +20,15 @@ TOOL_METADATA = {
     },
     
     # 账单相关
-    "query_bills": {
-        "display_name": "查询账单",
-        "description": "正在查询您的账单信息",
-        "icon": "bill",
-        "category": "bill"
-    },
     "query_unpaid_bills": {
         "display_name": "查询未支付账单",
         "description": "正在查询未支付的账单",
+        "icon": "bill",
+        "category": "bill"
+    },
+    "pay_bill": {
+        "display_name": "支付账单",
+        "description": "正在支付账单",
         "icon": "bill",
         "category": "bill"
     },
@@ -68,23 +68,41 @@ TOOL_METADATA = {
         "icon": "repair",
         "category": "repair"
     },
+    
+    # 天气相关
     "get_weather": {
         "display_name": "查询天气",
         "description": "正在查询天气",
         "icon": "weather",
         "category": "weather"
     },
+    
+    # 时间相关
+    "get_time": {
+        "display_name": "获取当前时间",
+        "description": "正在获取当前时间",
+        "icon": "time",
+        "category": "time"
+    },
+    
+    # 邮件相关
     "send_scheduled_email": {
         "display_name": "发送定时邮件",
         "description": "正在发送定时邮件",
         "icon": "email",
         "category": "email"
     },
-    "get_time": {
-        "display_name": "获取当前时间",
-        "description": "正在获取当前时间",
-        "icon": "time",
-        "category": "time"
+    "get_scheduled_email": {
+        "display_name": "查询定时邮件",
+        "description": "正在查询定时邮件",
+        "icon": "email",
+        "category": "email"
+    },
+    "delete_scheduled_email": {
+        "display_name": "删除定时邮件",
+        "description": "正在删除定时邮件",
+        "icon": "email",
+        "category": "email"
     },
     
     # 搜索相关
@@ -112,17 +130,51 @@ TOOL_METADATA = {
         "icon": "domain",
         "category": "search"
     },
-    "get_scheduled_email": {
-        "display_name": "查询定时邮件",
-        "description": "正在查询定时邮件",
-        "icon": "email",
-        "category": "email"
+    
+    # 图片生成相关
+    "generate_image_from_text": {
+        "display_name": "文生图",
+        "description": "正在根据描述生成图片",
+        "icon": "image",
+        "category": "image"
     },
-    "delete_scheduled_email": {
-        "display_name": "删除定时邮件",
-        "description": "正在删除定时邮件",
-        "icon": "email",
-        "category": "email"
+    
+    # 访客相关
+    "create_visitor": {
+        "display_name": "访客登记",
+        "description": "正在登记访客信息",
+        "icon": "visitor",
+        "category": "visitor"
+    },
+    
+    # 商城相关
+    "search_goods": {
+        "display_name": "搜索商品",
+        "description": "正在搜索商品",
+        "icon": "shop",
+        "category": "mall"
+    },
+    
+    # 社区公告相关
+    "get_community_announcements": {
+        "display_name": "获取社区公告",
+        "description": "正在获取社区公告",
+        "icon": "announcement",
+        "category": "community"
+    },
+    
+    # 用户相关
+    "get_user_profile": {
+        "display_name": "获取用户资料",
+        "description": "正在获取用户资料",
+        "icon": "user",
+        "category": "user"
+    },
+    "update_user_profile": {
+        "display_name": "更新用户资料",
+        "description": "正在更新用户资料",
+        "icon": "user",
+        "category": "user"
     },
 }
 
